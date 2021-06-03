@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Praca inżynierska</title>
+</head>
+<body>
+    
+    <div class="container">
+        <form method="POST" action="" enctype="multipart/form-data" id="myform">
+        
+            <div class="preview">
+                <img src="" id="img" width="100" height="100">
+            </div>
+            <div>
+                <input type="file" name="file" id="file">
+                <input type="button" name="button" id="but_upload" value="Upload">
+            </div>
+
+        </form>
+
+
+
+
+        <!-- <img src="../learning-backend/Images/0o6kCiaU.jpg" alt="" width="100" height="100"> -->
+    </div>
+
+    <video
+    id="my-video"
+    class="video-js"
+    controls
+    preload="auto"
+    width="640"
+    height="264"
+    poster="../../4k0w7k3a0t461.jpg"
+    data-setup="{}"
+    > 
+        <source src="../backend/Images/I5F2um2E.mp4" type="video/mp4" />
+        <source src="MY_VIDEO.webm" type="video/webm" />
+        <p class="vjs-no-js">
+        To view this video please enable JavaScript, and consider upgrading to a
+        web browser that
+        <a href="https://videojs.com/html5-video-support/" target="_blank"
+            >supports HTML5 video</a
+        >
+        </p>
+    </video>
+
+
+</body>
+
+<script>
+
+    $(document).ready(function(){
+
+        $("#but_upload").click(function(){
+
+            var fd = new FormData();
+            var files = $('#file')[0].files;
+            
+
+            if(files.length > 0 ){
+            fd.append('file',files[0]);
+
+            $.ajax({
+                url: 'http://127.0.0.1:8000/image/',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                 if(response != 0){
+                    
+                    console.log(response["name"])
+                    
+                    if(response["suffix"] == "mp4") {
+                        $(".video video source").attr("src","../backend/Images/"+response["name"]+"."+response["suffix"]);
+                        $(".video video")[0].load()
+                        $(".video").show();
+                    } else {
+                        $("#img").attr("src","../backend/Images/"+response["name"]+"."+response["suffix"]); 
+                        $(".preview img").show(); // Display image element
+                    }
+
+
+                 }else{
+                    alert('file not uploaded');
+                 }
+              },
+            });
+            } else {
+                alert("Please select a file.");
+            }
+        });
+    });
+
+</script>
+
+</html>
