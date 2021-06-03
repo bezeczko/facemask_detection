@@ -37,11 +37,10 @@
     preload="auto"
     width="640"
     height="264"
-    poster="../../4k0w7k3a0t461.jpg"
+    poster=""
     data-setup="{}"
     > 
-        <source src="../backend/Images/I5F2um2E.mp4" type="video/mp4" />
-        <source src="MY_VIDEO.webm" type="video/webm" />
+        <source src="" type="video/mp4" />
         <p class="vjs-no-js">
         To view this video please enable JavaScript, and consider upgrading to a
         web browser that
@@ -79,9 +78,9 @@
                     console.log(response["name"])
                     
                     if(response["suffix"] == "mp4") {
-                        $(".video video source").attr("src","../backend/Images/"+response["name"]+"."+response["suffix"]);
-                        $(".video video")[0].load()
-                        $(".video").show();
+                        $("#my-video source").attr("src","../backend/Images/"+response["name"]+"."+response["suffix"]);
+                        $("#my-video")[0].load()
+                        $("#my-video").show();
                     } else {
                         $("#img").attr("src","../backend/Images/"+response["name"]+"."+response["suffix"]); 
                         $(".preview img").show(); // Display image element

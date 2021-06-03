@@ -21,10 +21,8 @@
    display: none;
 }
 
-.video {
+#my-video {
    display: none;
-   width: 1280px;
-   height: 720px;
 }
 
 .button {
