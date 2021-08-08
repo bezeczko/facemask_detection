@@ -139,3 +139,5 @@ cython_debug/
 
 backend/Images
 backend/Videos
+ml/*.h5
+ml/test_images
