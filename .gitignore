@@ -141,3 +141,5 @@ backend/Images
 backend/Videos
 ml/*.h5
 ml/test_images
+ml/saved_model2
+ml/saved_model3
