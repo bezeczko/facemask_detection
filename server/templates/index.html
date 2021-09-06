@@ -4,16 +4,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', path='/main.css') }}">
     <title>Facemask detection</title>
 </head>
 <body>
     
-    <button id="start" onclick="start()">Start</button>
-    <button id="stop" style="display: none" onclick="stop()">Stop</button>
+    <div class="container">
 
-    <div id="video" style="display: none;">
-        <video id="camera-output" autoplay="true" playsinline="true"></video>
+        <h1 class="display-4">Wykrywanie maseczki ochronnej na obrazach</h1>
+
+        <div class="navbar-container">
+            <nav class="navbar navbar-expand-sm navbar-light">
+                <ul class="navbar-nav ms-auto text-center">
+                    <li class="nav-link" onclick="photoVideoClick()">Zdjęcie/wideo</li>
+                    <li class="nav-link" onclick="webcamClick()">Kamerka internetowa</li>
+                </ul>
+            </nav>
+        </div>
+
+        <div id="photovideo-container">
+            
+        </div>
+        
+        <div id="webcam-container" style="display: none;">
+            <button id="start" onclick="start()" class="btn btn-success">Start</button>
+            <button id="stop" style="display: none" onclick="stop()" class="btn btn-danger">Stop</button>
+        
+            <div id="video" style="display: none;">
+                <video id="camera-output" autoplay="true" playsinline="true"></video>
+            </div>
+        </div>
+
+
+
+
     </div>
+
+
     
 
     <script src="{{ url_for('static', path='/main.js') }}"></script>

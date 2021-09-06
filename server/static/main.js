@@ -1,6 +1,9 @@
 //peer connection
 var pc = null;
 
+var webcamContainer = document.getElementById("webcam-container");
+var photoVideoContainer = document.getElementById("photovideo-container");
+
 function createPeerConnection() {
     
     var config = {
@@ -104,4 +107,18 @@ function stop() {
 
     document.getElementById('start').style.display = 'inline-block';
     document.getElementById('video').style.display = 'none';
+}
+
+function webcamClick() {
+    if (webcamContainer.style.display == 'none') {
+        photoVideoContainer.style.display = 'none';
+        webcamContainer.style.display = 'block';
+    }
+}
+
+function photoVideoClick() {
+    if (photoVideoContainer.style.display == 'none') {
+        webcamContainer.style.display = 'none';
+        photoVideoContainer.style.display = 'block';
+    }
 }
