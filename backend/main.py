@@ -59,6 +59,6 @@ async def image(file: UploadFile = File(...)):
         "suffix": file_suffix
         }
 
-# @app.post("/movie/")
-# async def movie(file: UploadFile = File(...)):
-#     with open
+@app.post("/webcam/")
+async def webcam():
+    return 0
