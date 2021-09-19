@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,39 +12,51 @@
     
     <div class="container">
 
-        <h1 class="display-4">Wykrywanie maseczki ochronnej na obrazach</h1>
+        <h1 class="display-4 text-white">Wykrywanie maseczki ochronnej na obrazach</h1>
 
         <div class="navbar-container">
             <nav class="navbar navbar-expand-sm navbar-light">
                 <ul class="navbar-nav ms-auto text-center">
-                    <li class="nav-link" onclick="photoVideoClick()">Zdjęcie/wideo</li>
-                    <li class="nav-link" onclick="webcamClick()">Kamerka internetowa</li>
+                    <li style="text-decoration: underline; font-weight: bold;" id="photovideoBtn" class="nav-link text-white" onclick="photoVideoClick()">Zdjęcie/wideo</li>
+                    <li id="cameraBtn" class="nav-link text-white" onclick="webcamClick()">Kamerka internetowa</li>
                 </ul>
             </nav>
         </div>
 
         <div id="photovideo-container">
-            
+
+            <form method="POST" action="" enctype="multipart/form-data" id="myform">
+                <div class="mb-1" style="width: 50%; margin: auto;">
+                    <label for="file" class="form-label text-white fw-bold">Prześlij zdjęcie lub wideo</label>
+                    <br>
+                    <input class="form-control" type="file" id="file">
+                    <button id="but_upload" type="button" class="btn btn-light fw-bold mt-3">Prześlij</button>
+                </div>
+            </form> 
+
+            <div id="preview">
+                <img src="" id="img">
+            </div>
+
         </div>
         
-        <div id="webcam-container" style="display: none;">
+        <div id="webcam-container" hidden>
             <button id="start" onclick="start()" class="btn btn-success">Start</button>
-            <button id="stop" style="display: none" onclick="stop()" class="btn btn-danger">Stop</button>
+            <button id="stop" hidden onclick="stop()" class="btn btn-danger">Stop</button>
         
-            <div id="video" style="display: none;">
+            <div id="video">
                 <video id="camera-output" autoplay="true" playsinline="true"></video>
             </div>
         </div>
-
-
-
 
     </div>
 
 
     
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ url_for('static', path='/main.js') }}"></script>
+   
 
 </body>
 </html>

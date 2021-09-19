@@ -1,3 +1,7 @@
+body {
+    background-color: #333;
+}
+
 .container {
     text-align: center;
     margin: auto;
@@ -19,4 +23,25 @@
 .navbar-container {
     width: 50%;
     margin: auto;
+}
+
+.webcam-container {
+    margin: auto;
+    width: 80%;
+}
+
+.form-group {
+    margin: auto;
+}
+
+#photovideo-container {
+    padding-top: 50px;
+}
+
+#video {
+    padding-top: 20px;
+}
+
+#preview {
+    padding-top: 20px;
 }
