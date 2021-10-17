@@ -143,3 +143,5 @@ ml/*.h5
 ml/test_images
 ml/saved_model2
 ml/saved_model3
+ml/testing_images.py
+ml/webcam_prototype.py
