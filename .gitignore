@@ -145,3 +145,4 @@ ml/saved_model2
 ml/saved_model3
 ml/testing_images.py
 ml/webcam_prototype.py
+*.mp4
