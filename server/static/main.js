@@ -158,7 +158,12 @@ $(document).ready(function(){
                 
                 console.log(response)
 
-                $("#img").attr('src',`data:image/png;base64,${response["encoded_img"]}`);
+                if (response["extension"] == "jpg" || response["extension"] == "png"){
+                    $("#img").attr('src',`data:image/png;base64,${response["encoded_file"]}`);
+                } else if (response["extension"] == "mp4") {
+                    $("#video_output").attr('src',`data:video/mp4;base64,${response["encoded_file"]}`)
+                }
+                
                 // let height = response["img_dimensions"].substring(1, response["img_dimensions"].length-1).split(',')[0];
                 // let width = response["img_dimensions"].substring(1, response["img_dimensions"].length-1).split(',')[1];
                 // console.log(width)

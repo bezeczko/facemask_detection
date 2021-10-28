@@ -12,7 +12,9 @@ import uuid
 import logging
 import cv2
 import asyncio
-import io
+import random
+import string
+import os
 import numpy as np
 import base64
 import tensorflow as tf
@@ -27,14 +29,14 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-# Loading model trained earlier
+# Wczytanie modelu
 model = keras.models.load_model('saved_model')
 
-# Font for text on video
+# Czcionka używana do napisów przez OpenCV
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
 
-# Cascade for detecting faces
-face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+# Wczytanie kaskady
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 origins = [
     'http://localhost',
@@ -138,21 +140,114 @@ async def on_shutdown():
 async def image(file: UploadFile = File(...)):
 
     contents = await file.read()
-    nparr = np.fromstring(contents, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    
+    extension = str(file.filename).split(".")[1]
 
-    img_dimensions = str(img.shape)
+    if extension == "jpg" or extension == "png":
 
-    processed_img = processFrame(img)
+        nparr = np.fromstring(contents, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-    _, encoded_img = cv2.imencode('.png', processed_img)
-    encoded_img = base64.b64encode(encoded_img)
+        img_dimensions = str(img.shape)
 
-    return {
-        'filename': file.filename,
-        'img_dimensions': img_dimensions,
-        'encoded_img': encoded_img,
-    }
+        processed_img = processFrame(img)
+
+        _, encoded_img = cv2.imencode('.png', processed_img)
+        encoded_img = base64.b64encode(encoded_img)
+
+        return {
+            'filename': file.filename,
+            'extension': extension,
+            'encoded_file': encoded_img,
+        }
+    elif extension == "mp4":
+        
+        print(os.getcwd())
+
+        # Generowanie losowej nazwy pliku
+        letters = string.ascii_letters
+        tmp_filename = ''.join(random.choice(letters) for i in range (10)) + '.mp4'
+
+        # Zapisanie pliku do folderu z plikami tymczasowymi
+        with open('tmp/'+tmp_filename, 'wb') as wfile:
+            wfile.write(contents)
+
+        # Odczytanie pliku tymczasowego
+        cap = cv2.VideoCapture('tmp/'+tmp_filename)
+
+        cap_width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+        cap_height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        cap_fps = cap.get(cv2.CAP_PROP_FPS)
+        fourcc = cv2.VideoWriter_fourcc('m','p','4','v')
+
+        out = cv2.VideoWriter('tmp/'+tmp_filename.split('.')[0]+'_output.mp4', fourcc, cap_fps, (int(cap_width), int(cap_height)))
+
+        while cap.isOpened():
+            ret, frame = cap.read()
+
+            if ret == True:
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(60,60), flags=cv2.CASCADE_SCALE_IMAGE)
+
+                for (x, y, w, h) in faces:
+                    # Checking if values are not exceeding dimensions of the frame
+                    if (y-40) > 0:
+                        y0 = y-40    
+                    else:
+                        y0 = 0
+                    
+                    if (y+h+40) < frame.shape[0]:
+                        y1 = y+h+40  
+                    else:
+                        y1 = frame.shape[0]
+
+                    if (x-20) > 0:
+                        x0 = x-20
+                    else:
+                        x0 = 0
+
+                    if (x+w+20) < frame.shape[1]:
+                        x1 = x+w+20 
+                    else:
+                        x1 = frame.shape[1]
+
+                    img_array = keras.preprocessing.image.img_to_array(cv2.resize(cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2RGB), (140, 140)))
+                    img_array = tf.expand_dims(img_array, 0)
+
+                    predictions = model.predict(img_array)
+
+                    score = float(predictions[0])
+
+                    predictions_text_1 = "{:.2f}% with mask".format(100 * (1 - score))
+                    predictions_text_2 = "{:.2f}% without mask".format(100 * score)
+
+                    if score < 0.5:
+                        cv2.rectangle(frame, (x-20, y-20), (x+w+20, y+h+40), (0,255,0), 2)
+                    else:
+                        cv2.rectangle(frame, (x-20, y-20), (x+w+20, y+h+40), (0,0,255), 2)
+
+                    cv2.putText(frame, predictions_text_1, (x, y+h+50), font, 1, (255,255,255), 2, cv2.LINE_AA)
+                    cv2.putText(frame, predictions_text_2, (x, y+h+80), font, 1, (255,255,255), 2, cv2.LINE_AA)
+
+                out.write(frame)
+            else:
+                break
+        cap.release()
+        out.release()
+
+        with open('tmp/'+tmp_filename.split('.')[0]+'_output.mp4', 'rb') as processed_file:
+            print("Reading " + tmp_filename.split('.')[0]+'_output.mp4')
+            output_file = processed_file.read()
+
+        print("Encoding " + tmp_filename.split('.')[0]+'_output.mp4')
+        encoded_video = base64.b64encode(output_file)
+
+        return {
+            'filename': file.filename,
+            'extension': extension,
+            'encoded_file': encoded_video,
+        }
+
 
 def processFrame(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
