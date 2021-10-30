@@ -5,6 +5,7 @@ var webcamContainer = document.getElementById("webcam-container");
 var photoVideoContainer = document.getElementById("photovideo-container");
 var photovideoBtn = document.getElementById("photovideoBtn");
 var cameraBtn = document.getElementById("cameraBtn");
+var download = document.getElementById("download")
 
 function createPeerConnection() {
     
@@ -136,6 +137,26 @@ function photoVideoClick() {
     }
 }
 
+const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+  
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+  
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+  
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+  
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+}
+
 $(document).ready(function(){
 
     $("#but_upload").click(function(){
@@ -153,36 +174,27 @@ $(document).ready(function(){
             data: fd,
             contentType: false,
             processData: false,
+            beforeSend: function () {
+                $("#overlay").fadeIn(300);
+            },
             success: function(response){
-             if(response != 0){
-                
-                console.log(response)
+                if(response != 0){
 
-                if (response["extension"] == "jpg" || response["extension"] == "png"){
-                    $("#img").attr('src',`data:image/png;base64,${response["encoded_file"]}`);
-                } else if (response["extension"] == "mp4") {
-                    $("#video_output").attr('src',`data:video/mp4;base64,${response["encoded_file"]}`)
+                    const blob = b64toBlob(response["encoded_file"], "image/png");
+                    const blobUrl = URL.createObjectURL(blob);
+                    $("#btn_download").attr('href',blobUrl);
+                    $("#btn_download").attr('download',response["new_filename"]);
+                    download.hidden = false;
+
+                } else{
+                    alert('file not uploaded');
                 }
-                
-                // let height = response["img_dimensions"].substring(1, response["img_dimensions"].length-1).split(',')[0];
-                // let width = response["img_dimensions"].substring(1, response["img_dimensions"].length-1).split(',')[1];
-                // console.log(width)
-                // $("#img").height(height).width(width);
-                
-                // if(response["suffix"] == "mp4") {
-                //     $("#my-video source").attr("src","../backend/Images/"+response["name"]+"."+response["suffix"]);
-                //     $("#my-video")[0].load()
-                //     $("#my-video").show();
-                // } else {
-                //     $("#img").attr("src","../backend/Images/"+response["name"]+"."+response["suffix"]); 
-                //     $(".preview img").show();
-                // }
-
-
-             }else{
-                alert('file not uploaded');
-             }
-          },
+            },
+            complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                setTimeout(function(){
+                    $("#overlay").fadeOut(300);
+                },500);
+            },
         });
         } else {
             alert("Please select a file.");

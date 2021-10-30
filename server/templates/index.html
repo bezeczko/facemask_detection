@@ -34,11 +34,8 @@
                 </div>
             </form> 
 
-            <div id="preview">
-                <img src="" id="img">
-                <video controls>
-                    <source type="video/mp4" src="" id="video_output">
-                </video>
+            <div id="download" hidden>
+               <a href="" id="btn_download" download="proposed_file_name"><button type="button" class="btn btn-success fw-bold mt-3">Pobierz</button></a> 
             </div>
 
         </div>
@@ -55,7 +52,11 @@
     </div>
 
 
-    
+    <div id="overlay">
+        <div class="cv-spinner">
+          <span class="spinner"></span>
+        </div>
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ url_for('static', path='/main.js') }}"></script>
