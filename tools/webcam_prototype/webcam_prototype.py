@@ -11,7 +11,7 @@ model = keras.models.load_model('saved_model')
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
 
 # Cascade for detecting faces
-face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 # Capturing external camera
 video_capture = cv2.VideoCapture(1, cv2.CAP_DSHOW)

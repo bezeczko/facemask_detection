@@ -179,11 +179,11 @@ $(document).ready(function(){
             },
             success: function(response){
                 if(response != 0){
-
+                    console.log(response);
                     const blob = b64toBlob(response["encoded_file"], "image/png");
                     const blobUrl = URL.createObjectURL(blob);
                     $("#btn_download").attr('href',blobUrl);
-                    $("#btn_download").attr('download',response["new_filename"]);
+                    $("#btn_download").attr('download',response["new_filename"]+"."+response["extension"]);
                     download.hidden = false;
 
                 } else{
