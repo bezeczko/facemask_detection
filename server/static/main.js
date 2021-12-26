@@ -73,8 +73,9 @@ function start() {
     var constraints = {
         audio: false,
         video: {
-            width: { min: 640, ideal: 1280, max: 1280 },
-            height: { min: 480, ideal: 720, max: 720 }
+            width: { min: 640, ideal: 640, max: 640 },
+            height: { min: 480, ideal: 480, max: 480 },
+            frameRate: 5,
         }
     }
 
@@ -169,7 +170,7 @@ $(document).ready(function(){
         fd.append('file',files[0]);
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/photovideo',
+            url: '/photovideo',
             type: 'post',
             data: fd,
             contentType: false,
@@ -190,7 +191,7 @@ $(document).ready(function(){
                     alert('file not uploaded');
                 }
             },
-            complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+            complete: function () { 
                 setTimeout(function(){
                     $("#overlay").fadeOut(300);
                 },500);

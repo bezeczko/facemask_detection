@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 
 # Loading model trained earlier
-model = keras.models.load_model('saved_model')
+model = keras.models.load_model('saved_model.h5')
 
 # Font for text on video
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
@@ -42,8 +42,8 @@ while True:
         else:
             y0 = 0
         
-        if (y+h+40) < frame.shape[0]:
-            y1 = y+h+40  
+        if (y+h+60) < frame.shape[0]:
+            y1 = y+h+60  
         else:
             y1 = frame.shape[0]
 
@@ -64,13 +64,14 @@ while True:
         img_array = keras.preprocessing.image.img_to_array(cv2.resize(cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2RGB),(140,140)))
         img_array = tf.expand_dims(img_array, 0)
 
-        # Checking the image
+        # # Checking the image
         predictions = model.predict(img_array)
         
-        # Getting the score
+        # # Getting the score
         score = float(predictions[0])
+        # print("{:.2f}%".format(100*score))
 
-        # Preparing text for the image
+        # # Preparing text for the image
         predictions_text_1 = "{:.2f}% with mask".format(100 * (1 - score))
         predictions_text_2 = "{:.2f}% without mask".format(100 * score)
 
