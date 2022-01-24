@@ -1,4 +1,4 @@
-# Facemask detection using OpenCV
+# Facemask detection using OpenCV and Keras
 
 Program containing user interface (web) and API which allow to process image, video or webcam feed in order to recognize faces on each frame and distinguish whether detected face is wearing facemask or not. 
 
