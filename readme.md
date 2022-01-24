@@ -15,6 +15,14 @@ Processing of data will be done using OpenCV 2 in Python.
 - matplotlib
 - os
 - sklearn
+- aiortc
+- base64
+- uvicorn
+- numpy
+- json
+- logging
+- uuid
+- av
 
 ---
 
