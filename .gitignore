@@ -146,9 +146,9 @@ ml/saved_model2
 ml/saved_model3
 ml/testing_images.py
 ml/webcam_prototype.py
-ml/dataset_old
+ml/dataset_old/
 server/tmp
 ml-old/
-tools
+tools/
 
 *.mp4
