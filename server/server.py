@@ -78,19 +78,12 @@ class VideoTransformTrack(MediaStreamTrack):
 def processFrame(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # Detecting faces using haarcascade
     faces = face_cascade.detectMultiScale(gray,
                                           scaleFactor=1.1,
-                                          minNeighbors=5,
-                                          minSize=(60, 60),
-                                          flags=cv2.CASCADE_SCALE_IMAGE)
+                                          minNeighbors=4)
     
-    # For every detected face predictions are made to determine if face
-    # has facemask on it or not. If it has facemask on then green rectangle
-    # is drawn and if not red one.
     for (x, y, w, h) in faces:
 
-        # Checking if values are not exceeding dimensions of the frame
         if (y-40) > 0:
             y0 = y-40    
         else:
@@ -111,31 +104,21 @@ def processFrame(frame):
         else:
             x1 = frame.shape[1]
 
-        # Preparing detected face to be predicted by the model:
-        # - we're cutting face from the frame
-        # - then we're changing color space from BGR to RGB
-        # - and on the end we're resizing it to 140 x 140 (model is prepared for such data)
-        img_array = keras.preprocessing.image.img_to_array(cv2.resize(cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2RGB),(140,140)))
+        img_array = keras.preprocessing.image.img_to_array(cv2.resize(cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2RGB), (140,140)))
         img_array = tf.expand_dims(img_array, 0)
         
-        # Checking the image
         predictions = model.predict(img_array)
         
-        # Getting the score
         score = float(predictions[0])
 
-        # Preparing text for the image
         predictions_text_1 = "{:.2f}% twarz z maseczka".format(100 * (1 - score))
         predictions_text_2 = "{:.2f}% twarz bez maseczki".format(100 * score)
 
-        # Checking if prediction for wearing a mask are more than 50%
-        # If so green rectangle will be drawn and if not red one
         if score < 0.5:
             cv2.rectangle(frame, (x-20, y-40), (x+w+20, y+h+40), (0,255,0), 2)
         else:
             cv2.rectangle(frame, (x-20, y-40), (x+w+20, y+h+40), (0,0,255), 2)
         
-        # Adding text with score of prediction
         cv2.putText(frame, predictions_text_1, (x, y+h+50), font, 1,(0,),6,cv2.LINE_AA)
         cv2.putText(frame, predictions_text_1, (x, y+h+50), font, 1,(66,245,236),2,cv2.LINE_AA)
         cv2.putText(frame, predictions_text_2, (x, y+h+80), font, 1,(0,),6,cv2.LINE_AA)
@@ -223,8 +206,6 @@ async def image(file: UploadFile = File(...)):
 
         nparr = np.fromstring(contents, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-        # img_dimensions = str(img.shape)
 
         processed_img = processFrame(img)
 

@@ -137,19 +137,18 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-backend/Images
-backend/Videos
 ml/*.h5
 ml/*.jpg
+ml/*.png
 ml/test_images
 ml/saved_model
 ml/saved_model2
 ml/saved_model3
 ml/testing_images.py
 ml/webcam_prototype.py
-ml/dataset
+ml/dataset_old
 server/tmp
 ml-old/
-tools/webcam_prototype/saved_model
+tools
 
 *.mp4
